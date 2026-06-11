@@ -1,110 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-// Scroll-driven intro: Title -> CTA -> Chat, then the overlay fades out
-// to reveal the homepage underneath. Placeholder text for now so the
-// frame flow can be verified.
+// Scrollable intro: Title -> CTA -> Chat stacked as full-height sections.
+// Scrolling past the last card fades the overlay out to reveal the homepage.
+// Placeholder text for now so the frame flow can be verified.
 const CARDS = [
   { key: "title", text: "Title" },
-  { key: "cta", text: "CTA" },
   { key: "chat", text: "Chat" },
 ];
 
 export default function Overlay() {
-  // step 0..CARDS.length-1 show a card; step === CARDS.length dismisses.
-  const [step, setStep] = useState(0);
+  const [dismissed, setDismissed] = useState(false);
 
-  const dismissed = step >= CARDS.length;
-
-  useEffect(() => {
+  const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (dismissed) return;
-
-    let lock = false;
-    const advance = (dir: number) => {
-      if (lock) return;
-      lock = true;
-      setStep((s) => Math.min(CARDS.length, Math.max(0, s + dir)));
-      // debounce so one gesture moves one step
-      window.setTimeout(() => {
-        lock = false;
-      }, 700);
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (Math.abs(e.deltaY) < 5) return;
-      advance(e.deltaY > 0 ? 1 : -1);
-    };
-
-    let touchStartY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      const dy = touchStartY - e.touches[0].clientY;
-      if (Math.abs(dy) < 30) return;
-      advance(dy > 0 ? 1 : -1);
-      touchStartY = e.touches[0].clientY;
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: false });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-    };
-  }, [dismissed]);
+    const el = e.currentTarget;
+    // Dismiss once the user scrolls a bit past the last card.
+    const lastCardTop = (CARDS.length - 1) * el.clientHeight;
+    if (el.scrollTop > lastCardTop + el.clientHeight * 0.3) {
+      setDismissed(true);
+    }
+  };
 
   return (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "white",
-        zIndex: 9999,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        opacity: dismissed ? 0 : 1,
-        pointerEvents: dismissed ? "none" : "auto",
-        transition: "opacity 600ms ease",
-      }}
+      onScroll={onScroll}
+      className={`fixed inset-0 z-[9999] bg-white transition-opacity duration-[600ms] ease-in-out ${
+        dismissed
+          ? "pointer-events-none overflow-hidden opacity-0"
+          : "overflow-y-auto opacity-100"
+      }`}
     >
-      {CARDS.map((card, i) => (
-        <div
+      {CARDS.map((card) => (
+        <section
           key={card.key}
-          style={{
-            position: "absolute",
-            fontSize: "clamp(2rem, 8vw, 6rem)",
-            fontWeight: 700,
-            color: "#111",
-            opacity: step === i ? 1 : 0,
-            transform: step === i ? "translateY(0)" : "translateY(20px)",
-            transition: "opacity 500ms ease, transform 500ms ease",
-            pointerEvents: "none",
-          }}
+          className="flex min-h-screen w-full items-center justify-center px-8 py-8 md:px-24"
         >
-          {card.text}
-        </div>
+          <div className="mx-auto border-4 flex aspect-[1080/1920] md:aspect-[1920/1080] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))] items-center justify-center text-[clamp(2rem,8vw,6rem)] font-bold text-[#111]">
+            {card.text}
+          </div>
+        </section>
       ))}
-
-      {!dismissed && (
-        <div
-          style={{
-            position: "absolute",
-            bottom: "2rem",
-            fontSize: "0.875rem",
-            color: "#888",
-            letterSpacing: "0.05em",
-          }}
-        >
-          scroll ↓ ({step + 1}/{CARDS.length})
-        </div>
-      )}
     </div>
   );
 }
