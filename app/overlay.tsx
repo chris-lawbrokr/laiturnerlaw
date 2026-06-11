@@ -1,14 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import localFont from "next/font/local";
-import { ArrowUpRight, MessageCircle, Phone } from "lucide-react";
+import {
+  ChevronDown,
+  Scale,
+  HeartHandshake,
+  Globe,
+  CalendarCheck,
+} from "lucide-react";
+import VideoCard from "./video-card";
+import { rhymesDisplay } from "./fonts";
 
-// Self-hosted display font for the headline.
-const rhymesDisplay = localFont({
-  src: "../public/fonts/Rhymes Display Medium.woff2",
-  display: "swap",
-});
+// Quick-start prompts for the firm's core practice areas.
+const QUESTIONS = [
+  {
+    icon: Scale,
+    title: "Facing criminal charges?",
+    desc: "DUI, assault, drug, and other criminal defense matters.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Divorce or custody?",
+    desc: "Get guidance on family law, custody, and child support.",
+  },
+  {
+    icon: Globe,
+    title: "Need immigration help?",
+    desc: "Visas, green cards, citizenship, and deportation defense.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Want a free case review?",
+    desc: "Tell us about your situation and we'll reach out to you.",
+  },
+];
 
 // Scrollable intro: stacked full-height cards. Scrolling past the last card
 // fades the overlay out to reveal the homepage. Placeholder text for now so
@@ -37,116 +62,81 @@ export default function Overlay() {
       }`}
     >
       <section className="flex w-full flex-col items-center px-8 py-8 md:px-24">
-        <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
-            src="/bg.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
-          {/* <div className="absolute left-1/2 top-8 -translate-x-1/2 rounded-2xl border border-white/10 bg-[#1f2b3b]/60 px-6 py-4 shadow-lg shadow-black/20 backdrop-blur-md">
-            <img
-              src="/images/logo.png"
-              alt="Lai & Turner Law Firm PLLC — The People's Attorney"
-              className="max-w-[130px]"
-            />
-          </div> */}
-          <img
-            src="/images/logo.png"
-            alt="Lai & Turner Law Firm PLLC — The People's Attorney"
-            className="absolute left-1/2 top-8 max-w-[150px] -translate-x-1/2"
-          />
-          <div className="absolute left-8 top-8 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-md">
-            <svg
-              className="h-5 w-5 shrink-0 text-white/80"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              placeholder="How can we help you today?"
-              className="w-40 bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:w-56"
-            />
+        <VideoCard />
+        <div className="relative mt-8 mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+          {/* On-brand blurred gradient blobs contained within the card. */}
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute -left-[10%] top-[5%] size-[45%] rounded-full bg-[#b7aa7f]/60 blur-3xl" />
+            <div className="absolute -right-[5%] top-[25%] size-[55%] rounded-full bg-[#d8c79b]/70 blur-3xl" />
+            <div className="absolute bottom-[5%] left-[15%] size-[50%] rounded-full bg-[#e3d9bf]/70 blur-3xl" />
+            <div className="absolute left-[45%] top-[55%] size-[40%] rounded-full bg-[#1f2b3b]/20 blur-3xl" />
           </div>
-          <a
-            href="tel:+14055550199"
-            className="absolute right-8 top-8 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-base font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
-          >
-            <svg
-              className="h-5 w-5 shrink-0 text-white/80"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
+          {/* Semi-transparent blue glass overlay, like the one over the video. */}
+          <div className="absolute inset-0 bg-[#1f2b3b]/10 backdrop-blur-2xl" />
+          <div className="relative z-10 flex w-full max-w-3xl flex-col items-center gap-6 px-8 text-white">
+            <h2
+              className={`text-center text-3xl font-medium leading-tight md:text-5xl ${rhymesDisplay.className}`}
             >
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-            </svg>
-            (405) 555-0199
-          </a>
-          <span
-            className={`relative text-center text-[#e3d9bf] ${rhymesDisplay.className}`}
-          >
-            The People's Attorney
-          </span>
-          <div className="absolute bottom-8 left-8 max-w-[55%] text-left text-white">
-            <p className="text-sm font-normal md:text-sm mb-4">
-              <b>Top-Reviewed Lawyers Serving Oklahoma City</b>
+              Let us know how we can <em>help</em>.
+            </h2>
+            <div className="flex w-full items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-md">
+              <svg
+                className="h-5 w-5 shrink-0 text-white/80"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Ask us about anything..."
+                className="w-full bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none"
+              />
+            </div>
+            <div className="flex w-full flex-wrap items-center justify-center gap-3">
+              {[
+                { icon: HeartHandshake, label: "Family Law Matter" },
+                { icon: Globe, label: "Immigration" },
+                { icon: Scale, label: "Criminal" },
+              ].map(({ icon: Icon, label }) => (
+                <button
+                  key={label}
+                  type="button"
+                  className="flex cursor-pointer items-center gap-2 rounded-full border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 px-4 py-2 text-sm font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
+                >
+                  <Icon className="size-4 text-white/80" />
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-white/70">
+              Click our quick links below
             </p>
-            <p className="mt-2 text-sm font-normal leading-tight max-w-[350px]">
-              We’re different from other law firms in OKC. Younger, more
-              innovative, and with the dynamic energy that your complex legal
-              matter needs. We’re tough on the opposition and fiercely dedicated
-              to your rights.
-            </p>
-          </div>
-          <div className="absolute bottom-8 right-8 flex gap-4">
-            <a
-              href="tel:+14055550199"
-              aria-label="Call us"
-              className="flex size-24 flex-col items-center justify-center gap-1.5 rounded-3xl border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 text-base font-medium text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
-            >
-              <Phone className="size-6" />
-              Call
-            </a>
-            <button
-              type="button"
-              className="group flex h-24 w-56 cursor-pointer items-center justify-between gap-3 rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 px-6 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
-            >
-              <span className="text-xl font-medium leading-tight">
-                Free Case
-                <br />
-                Evaluation
-              </span>
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[#b7aa7f]/50 bg-[#b7aa7f]/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-                <ArrowUpRight className="size-5" />
-              </span>
-            </button>
-            <button
-              type="button"
-              aria-label="Chat"
-              className="flex size-24 cursor-pointer items-center justify-center rounded-3xl border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
-            >
-              <MessageCircle className="size-8" />
-            </button>
+            <div className="flex w-full gap-4">
+              {QUESTIONS.map(({ title, desc }) => (
+                <button
+                  key={title}
+                  type="button"
+                  className="flex flex-1 cursor-pointer flex-col items-start gap-3 rounded-3xl border border-white/30 bg-white/10 p-5 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+                >
+                  <span className="text-sm font-semibold leading-snug">
+                    {title}
+                  </span>
+                  <span className="text-xs font-normal leading-snug text-white/70">
+                    {desc}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="mt-8 mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center border-4 text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
-          CTA
-        </div>
+        <ChevronDown className="mt-[28vh] size-10 animate-bounce text-[#1f2b3b]/60" />
       </section>
 
       {/* Extra room so the user can scroll past the last card to trigger dismiss. */}
