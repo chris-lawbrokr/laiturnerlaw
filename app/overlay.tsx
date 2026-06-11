@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown, Scale, HeartHandshake, Globe } from "lucide-react";
 import VideoCard from "./video-card";
+import CardActions from "./card-actions";
 import { rhymesDisplay } from "./fonts";
 
 // Quick-link cards into the firm's key pages.
@@ -133,6 +134,7 @@ export default function Overlay() {
               <ChevronDown className="size-4" />
             </button>
           </div>
+          <CardActions />
         </div>
         <ChevronDown className="mt-[28vh] size-10 animate-bounce text-[#1f2b3b]/60" />
       </section>
