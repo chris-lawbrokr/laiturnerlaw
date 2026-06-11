@@ -13,3 +13,8 @@ body {
   height: 100%;
   overflow: hidden;
 }
+
+/* Arial for all body text by default. */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}

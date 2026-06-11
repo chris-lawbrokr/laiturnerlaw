@@ -45,10 +45,21 @@ export default function Overlay() {
             muted
             playsInline
           />
-          <div className="absolute inset-0 bg-black/20" />
-          <span className={`relative text-center text-white ${rhymesDisplay.className}`}>
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+          <span
+            className={`relative text-center text-white ${rhymesDisplay.className}`}
+          >
             The People's Attorney
           </span>
+          <div className="absolute bottom-8 left-8 max-w-[55%] text-left text-white">
+            <p className="text-xs font-normal md:text-sm">
+              Top-Reviewed Lawyers Serving Oklahoma City
+            </p>
+            <p className="mt-2 text-lg font-normal leading-tight md:text-2xl">
+              Criminal Defense, Immigration and
+              <br /> Family Law Attorneys in Oklahoma City
+            </p>
+          </div>
         </div>
         <div className="mt-8 mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center border-4 text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
           CTA
