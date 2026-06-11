@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import localFont from "next/font/local";
-import { ArrowUpRight, Phone } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Phone } from "lucide-react";
 
 // Self-hosted display font for the headline.
 const rhymesDisplay = localFont({
@@ -103,12 +103,14 @@ export default function Overlay() {
             The People's Attorney
           </span>
           <div className="absolute bottom-8 left-8 max-w-[55%] text-left text-white">
-            <p className="text-xs font-normal md:text-sm">
-              Top-Reviewed Lawyers Serving Oklahoma City
+            <p className="text-sm font-normal md:text-sm mb-4">
+              <b>Top-Reviewed Lawyers Serving Oklahoma City</b>
             </p>
-            <p className="mt-2 text-lg font-normal leading-tight md:text-2xl">
-              Criminal Defense, Immigration and
-              <br /> Family Law Attorneys in Oklahoma City
+            <p className="mt-2 text-sm font-normal leading-tight max-w-[350px]">
+              We’re different from other law firms in OKC. Younger, more
+              innovative, and with the dynamic energy that your complex legal
+              matter needs. We’re tough on the opposition and fiercely dedicated
+              to your rights.
             </p>
           </div>
           <div className="absolute bottom-8 right-8 flex gap-4">
@@ -122,7 +124,7 @@ export default function Overlay() {
             </a>
             <button
               type="button"
-              className="group flex h-24 w-56 items-center justify-between gap-3 rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 px-6 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
+              className="group flex h-24 w-56 cursor-pointer items-center justify-between gap-3 rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 px-6 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
             >
               <span className="text-xl font-medium leading-tight">
                 Free Case
@@ -135,9 +137,10 @@ export default function Overlay() {
             </button>
             <button
               type="button"
-              className="flex size-24 items-center justify-center rounded-3xl border border-white/30 bg-white/10 text-base font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+              aria-label="Chat"
+              className="flex size-24 cursor-pointer items-center justify-center rounded-3xl border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
             >
-              Three
+              <MessageCircle className="size-8" />
             </button>
           </div>
         </div>
