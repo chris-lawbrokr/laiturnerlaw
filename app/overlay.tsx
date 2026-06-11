@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import localFont from "next/font/local";
 
-// Scrollable intro: Title -> CTA -> Chat stacked as full-height sections.
-// Scrolling past the last card fades the overlay out to reveal the homepage.
-// Placeholder text for now so the frame flow can be verified.
-const CARDS = [
-  { key: "title", text: "Title" },
-  { key: "chat", text: "Chat" },
-];
+// Self-hosted display font for the headline.
+const rhymesDisplay = localFont({
+  src: "../public/fonts/Rhymes Display Medium.woff2",
+  display: "swap",
+});
+
+// Scrollable intro: stacked full-height cards. Scrolling past the last card
+// fades the overlay out to reveal the homepage. Placeholder text for now so
+// the frame flow can be verified.
 
 export default function Overlay() {
   const [dismissed, setDismissed] = useState(false);
@@ -16,9 +19,9 @@ export default function Overlay() {
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (dismissed) return;
     const el = e.currentTarget;
-    // Dismiss once the user scrolls a bit past the last card.
-    const lastCardTop = (CARDS.length - 1) * el.clientHeight;
-    if (el.scrollTop > lastCardTop + el.clientHeight * 0.3) {
+    // Dismiss once scrolled (almost) to the bottom — i.e. past the last card.
+    // The trailing spacer gives the room needed to reach the bottom.
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) {
       setDismissed(true);
     }
   };
@@ -32,19 +35,28 @@ export default function Overlay() {
           : "overflow-y-auto opacity-100"
       }`}
     >
-      {CARDS.map((card) => (
-        <section
-          key={card.key}
-          className="flex min-h-screen w-full items-center justify-center px-8 py-8 md:px-24"
-        >
-          <div className="mx-auto border-4 flex aspect-[1080/1920] md:aspect-[1920/1080] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))] items-center justify-center text-[clamp(2rem,8vw,6rem)] font-bold text-[#111]">
-            {card.text}
-          </div>
-        </section>
-      ))}
+      <section className="flex w-full flex-col items-center px-8 py-8 md:px-24">
+        <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            src="/bg.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          <div className="absolute inset-0 bg-black/20" />
+          <span className={`relative text-center text-white ${rhymesDisplay.className}`}>
+            The People's Attorney
+          </span>
+        </div>
+        <div className="mt-8 mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center border-4 text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+          CTA
+        </div>
+      </section>
 
       {/* Extra room so the user can scroll past the last card to trigger dismiss. */}
-      <div className="h-screen" aria-hidden />
+      <div className="h-[25vh]" aria-hidden />
     </div>
   );
 }
