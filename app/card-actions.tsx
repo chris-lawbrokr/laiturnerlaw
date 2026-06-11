@@ -1,8 +1,41 @@
-import { ArrowUpRight, MessageCircle, Phone } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Pencil, Phone } from "lucide-react";
 
-// The three CTA buttons (Call, Free Case Evaluation, Chat) pinned to the
+// The CTA buttons (Call, Free Case Evaluation, Chat) pinned to the
 // bottom-right of a card. Shared between the video card and the chat card.
-export default function CardActions() {
+// `iconsOnly` renders all three as compact icon-only squares.
+export default function CardActions({
+  iconsOnly = false,
+}: {
+  iconsOnly?: boolean;
+}) {
+  if (iconsOnly) {
+    return (
+      <div className="absolute bottom-8 right-8 z-10 flex gap-4">
+        <a
+          href="tel:+14055550199"
+          aria-label="Call us"
+          className="flex size-16 cursor-pointer items-center justify-center rounded-3xl border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
+        >
+          <Phone className="size-6" />
+        </a>
+        <button
+          type="button"
+          aria-label="Free case evaluation"
+          className="flex size-16 cursor-pointer items-center justify-center rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
+        >
+          <Pencil className="size-6" />
+        </button>
+        <button
+          type="button"
+          aria-label="Chat"
+          className="flex size-16 cursor-pointer items-center justify-center rounded-3xl border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+        >
+          <MessageCircle className="size-6" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="absolute bottom-8 right-8 z-10 flex gap-4">
       <a

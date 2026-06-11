@@ -134,7 +134,7 @@ export default function Overlay() {
               <ChevronDown className="size-4" />
             </button>
           </div>
-          <CardActions />
+          <CardActions iconsOnly />
         </div>
         <ChevronDown className="mt-[28vh] size-10 animate-bounce text-[#1f2b3b]/60" />
       </section>
