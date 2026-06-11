@@ -62,7 +62,7 @@ export default function Overlay() {
             <div className="absolute left-[45%] top-[55%] size-[40%] rounded-full bg-[#1f2b3b]/20 blur-3xl" />
           </div>
           {/* Semi-transparent blue glass overlay, like the one over the video. */}
-          <div className="absolute inset-0 bg-[#1f2b3b]/10 backdrop-blur-2xl" />
+          <div className="absolute inset-0 bg-[#1f2b3b]/50 backdrop-blur-2xl" />
           <div className="relative z-10 flex w-full max-w-3xl flex-col items-center gap-6 px-8 text-white">
             <h2
               className={`text-center text-3xl font-medium leading-tight md:text-5xl ${rhymesDisplay.className}`}
@@ -109,15 +109,12 @@ export default function Overlay() {
                 </button>
               ))}
             </div>
-            <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-white/70">
-              Click our quick links below
-            </p>
-            <div className="flex w-full gap-4">
+            {/* <div className="flex w-full gap-4 mt-4">
               {QUESTIONS.map(({ title, desc }) => (
                 <button
                   key={title}
                   type="button"
-                  className="flex flex-1 cursor-pointer flex-col items-start gap-3 rounded-3xl border border-white/30 bg-white/10 p-5 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+                  className="flex flex-1 cursor-pointer flex-col items-start gap-2 rounded-3xl border border-white/30 bg-white/10 p-5 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
                 >
                   <span className="text-sm font-semibold leading-snug">
                     {title}
@@ -127,7 +124,14 @@ export default function Overlay() {
                   </span>
                 </button>
               ))}
-            </div>
+            </div> */}
+            <button
+              type="button"
+              className="flex cursor-pointer flex-col items-center gap-1 text-sm font-normal text-white/70 transition-colors hover:text-white"
+            >
+              I&apos;m looking for something else
+              <ChevronDown className="size-4" />
+            </button>
           </div>
         </div>
         <ChevronDown className="mt-[28vh] size-10 animate-bounce text-[#1f2b3b]/60" />
