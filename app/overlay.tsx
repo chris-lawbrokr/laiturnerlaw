@@ -42,6 +42,9 @@ export default function Overlay() {
           </div>
         </section>
       ))}
+
+      {/* Extra room so the user can scroll past the last card to trigger dismiss. */}
+      <div className="h-screen" aria-hidden />
     </div>
   );
 }
