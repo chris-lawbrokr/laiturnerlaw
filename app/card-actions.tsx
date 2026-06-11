@@ -1,4 +1,74 @@
-import { MessageCircle, Pencil, Phone } from "lucide-react";
+import { MessageCircle, Pencil, Phone, Search } from "lucide-react";
+
+// The three icon square buttons (Call, Book, Ask AI), without any positioning
+// wrapper, so they can be placed in different layouts. `withLabels` shows a
+// title under each icon.
+export function IconActions({
+  withLabels = false,
+  uniform = false,
+  onAction,
+}: {
+  withLabels?: boolean;
+  uniform?: boolean;
+  onAction?: () => void;
+}) {
+  const sizing = withLabels ? "size-20 flex-col gap-1" : "size-16";
+  const base = `flex ${sizing} cursor-pointer items-center justify-center rounded-3xl text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors`;
+  const label = "text-xs font-medium";
+
+  // Brighter glass used for every button when `uniform` is set: higher white
+  // tint, brighter border, and an inset top highlight for a glossy sheen.
+  const glass =
+    "border border-white/50 bg-white/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)] hover:bg-white/35";
+  const callStyle = uniform
+    ? glass
+    : "border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 hover:bg-[#1f2b3b]/60";
+  const bookStyle = uniform
+    ? glass
+    : "border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 hover:bg-[#b7aa7f]/45";
+  const askStyle = uniform
+    ? glass
+    : "border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 hover:bg-[#1f2b3b]/60";
+
+  return (
+    <>
+      <a
+        href="tel:+14055550199"
+        aria-label="Call us"
+        onClick={
+          onAction
+            ? (e) => {
+                e.preventDefault();
+                onAction();
+              }
+            : undefined
+        }
+        className={`${base} ${callStyle}`}
+      >
+        <Phone className="size-6" />
+        {withLabels && <span className={label}>Call</span>}
+      </a>
+      <button
+        type="button"
+        aria-label="Book a free case evaluation"
+        onClick={onAction}
+        className={`${base} ${bookStyle}`}
+      >
+        <Pencil className="size-6" />
+        {withLabels && <span className={label}>Consult</span>}
+      </button>
+      <button
+        type="button"
+        aria-label="Ask AI"
+        onClick={onAction}
+        className={`${base} ${askStyle}`}
+      >
+        <Search className="size-6" />
+        {withLabels && <span className={label}>Ask AI</span>}
+      </button>
+    </>
+  );
+}
 
 // The CTA buttons (Call, Free Case Evaluation, Chat) pinned to the
 // bottom-right of a card. Shared between the video card and the chat card.
@@ -11,27 +81,7 @@ export default function CardActions({
   if (iconsOnly) {
     return (
       <div className="absolute bottom-8 right-8 z-10 flex gap-4">
-        <a
-          href="tel:+14055550199"
-          aria-label="Call us"
-          className="flex size-16 cursor-pointer items-center justify-center rounded-3xl border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
-        >
-          <Phone className="size-6" />
-        </a>
-        <button
-          type="button"
-          aria-label="Free case evaluation"
-          className="flex size-16 cursor-pointer items-center justify-center rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
-        >
-          <Pencil className="size-6" />
-        </button>
-        <button
-          type="button"
-          aria-label="Chat"
-          className="flex size-16 cursor-pointer items-center justify-center rounded-3xl border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
-        >
-          <MessageCircle className="size-6" />
-        </button>
+        <IconActions />
       </div>
     );
   }

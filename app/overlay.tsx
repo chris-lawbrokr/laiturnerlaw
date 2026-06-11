@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Scale, HeartHandshake, Globe } from "lucide-react";
 import VideoCard from "./video-card";
-import CardActions from "./card-actions";
+import CardActions, { IconActions } from "./card-actions";
 import { rhymesDisplay } from "./fonts";
 
 // Quick-link cards into the firm's key pages.
@@ -32,6 +32,7 @@ const QUESTIONS = [
 
 export default function Overlay() {
   const [dismissed, setDismissed] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (dismissed) return;
@@ -43,8 +44,21 @@ export default function Overlay() {
     }
   };
 
+  // Reopen the intro and start it back at the top.
+  const reopen = () => setDismissed(false);
+
+  // Whenever the overlay is (re)opened, reset its scroll position to the top so
+  // it doesn't immediately re-trigger the bottom-of-scroll dismiss.
+  useEffect(() => {
+    if (!dismissed && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [dismissed]);
+
   return (
+    <>
     <div
+      ref={scrollRef}
       onScroll={onScroll}
       className={`fixed inset-0 z-[9999] bg-white transition-opacity duration-[600ms] ease-in-out ${
         dismissed
@@ -142,5 +156,13 @@ export default function Overlay() {
       {/* Extra room so the user can scroll past the last card to trigger dismiss. */}
       <div className="h-[25vh]" aria-hidden />
     </div>
+
+    {/* Floating quick-action buttons over the homepage, once the intro is gone. */}
+    {dismissed && (
+      <div className="fixed bottom-8 left-8 z-[10000] flex gap-3 rounded-3xl bg-[#1f2b3b] p-3 shadow-lg shadow-black/20">
+        <IconActions withLabels uniform onAction={reopen} />
+      </div>
+    )}
+    </>
   );
 }
