@@ -93,7 +93,7 @@ export default function CardActions({
 }) {
   if (iconsOnly) {
     return (
-      <div className="absolute bottom-8 right-8 z-10 flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md">
+      <div className="absolute bottom-8 right-8 z-10 flex gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md">
         <IconActions withLabels uniform seamless />
       </div>
     );
