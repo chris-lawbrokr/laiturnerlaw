@@ -6,27 +6,40 @@ import { MessageCircle, Pencil, Phone, Search } from "lucide-react";
 export function IconActions({
   withLabels = false,
   uniform = false,
+  seamless = false,
   onAction,
 }: {
   withLabels?: boolean;
   uniform?: boolean;
+  seamless?: boolean;
   onAction?: () => void;
 }) {
   const sizing = withLabels ? "h-16 w-20 flex-col gap-1" : "size-16";
-  const base = `flex ${sizing} cursor-pointer items-center justify-center rounded-3xl text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors`;
+  const base = `flex ${sizing} cursor-pointer items-center justify-center rounded-2xl text-white transition-colors ${
+    seamless ? "" : "shadow-lg shadow-black/10 backdrop-blur-md"
+  }`;
   const label = "text-xs font-medium";
 
   // Brighter glass used for every button when `uniform` is set: higher white
   // tint, brighter border, and an inset top highlight for a glossy sheen.
   const glass =
     "border border-white/50 bg-white/25 shadow-[inset_0_1px_1px_rgba(255,255,255,0.5)] hover:bg-white/35";
-  const callStyle = uniform
+  // `seamless` drops each button's own background/border so the three sit
+  // flush inside a single shared container, looking like one button.
+  const seamlessStyle = "hover:bg-white/15";
+  const callStyle = seamless
+    ? seamlessStyle
+    : uniform
     ? glass
     : "border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 hover:bg-[#1f2b3b]/60";
-  const bookStyle = uniform
+  const bookStyle = seamless
+    ? seamlessStyle
+    : uniform
     ? glass
     : "border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 hover:bg-[#b7aa7f]/45";
-  const askStyle = uniform
+  const askStyle = seamless
+    ? seamlessStyle
+    : uniform
     ? glass
     : "border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 hover:bg-[#1f2b3b]/60";
 
@@ -80,8 +93,8 @@ export default function CardActions({
 }) {
   if (iconsOnly) {
     return (
-      <div className="absolute bottom-8 right-8 z-10 flex gap-4">
-        <IconActions />
+      <div className="absolute bottom-8 right-8 z-10 flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md">
+        <IconActions withLabels uniform seamless />
       </div>
     );
   }
