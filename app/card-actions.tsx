@@ -1,4 +1,4 @@
-import { ArrowUpRight, MessageCircle, Pencil, Phone } from "lucide-react";
+import { MessageCircle, Pencil, Phone } from "lucide-react";
 
 // The CTA buttons (Call, Free Case Evaluation, Chat) pinned to the
 // bottom-right of a card. Shared between the video card and the chat card.
@@ -48,15 +48,15 @@ export default function CardActions({
       </a>
       <button
         type="button"
-        className="group flex h-24 w-56 cursor-pointer items-center justify-between gap-3 rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 px-6 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
+        className="group flex h-24 w-48 cursor-pointer items-center justify-between gap-3 rounded-3xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 px-5 text-left text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
       >
         <span className="text-xl font-medium leading-tight">
           Free Case
           <br />
           Evaluation
         </span>
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-[#b7aa7f]/50 bg-[#b7aa7f]/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-          <ArrowUpRight className="size-5" />
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#b7aa7f]/50 bg-[#b7aa7f]/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+          <Pencil className="size-4" />
         </span>
       </button>
       <button
