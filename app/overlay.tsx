@@ -1,37 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ChevronDown,
-  Scale,
-  HeartHandshake,
-  Globe,
-  CalendarCheck,
-} from "lucide-react";
+import { ChevronDown, Scale, HeartHandshake, Globe } from "lucide-react";
 import VideoCard from "./video-card";
 import { rhymesDisplay } from "./fonts";
 
-// Quick-start prompts for the firm's core practice areas.
+// Quick-link cards into the firm's key pages.
 const QUESTIONS = [
   {
-    icon: Scale,
-    title: "Facing criminal charges?",
-    desc: "DUI, assault, drug, and other criminal defense matters.",
+    title: "Free Case Evaluation",
+    desc: "Tell us about your situation and get a no-obligation review.",
   },
   {
-    icon: HeartHandshake,
-    title: "Divorce or custody?",
-    desc: "Get guidance on family law, custody, and child support.",
+    title: "Our Team",
+    desc: "Meet the attorneys fighting for the people of Oklahoma City.",
   },
   {
-    icon: Globe,
-    title: "Need immigration help?",
-    desc: "Visas, green cards, citizenship, and deportation defense.",
+    title: "Practice Areas",
+    desc: "Criminal defense, immigration, and family law representation.",
   },
   {
-    icon: CalendarCheck,
-    title: "Want a free case review?",
-    desc: "Tell us about your situation and we'll reach out to you.",
+    title: "Office Details",
+    desc: "Location, hours, and how to reach us in Oklahoma City.",
   },
 ];
 
@@ -99,16 +89,20 @@ export default function Overlay() {
                 className="w-full bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none"
               />
             </div>
+
             <div className="flex w-full flex-wrap items-center justify-center gap-3">
+              <span className="text-base font-semibold text-white">
+                Need help with a:
+              </span>
               {[
-                { icon: HeartHandshake, label: "Family Law Matter" },
-                { icon: Globe, label: "Immigration" },
-                { icon: Scale, label: "Criminal" },
+                { icon: HeartHandshake, label: "Family Matter" },
+                { icon: Globe, label: "Immigration Matter" },
+                { icon: Scale, label: "Criminal Matter" },
               ].map(({ icon: Icon, label }) => (
                 <button
                   key={label}
                   type="button"
-                  className="flex cursor-pointer items-center gap-2 rounded-full border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 px-4 py-2 text-sm font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
+                  className="flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
                 >
                   <Icon className="size-4 text-white/80" />
                   {label}
