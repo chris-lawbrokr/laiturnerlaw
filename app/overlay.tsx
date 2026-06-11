@@ -159,7 +159,7 @@ export default function Overlay() {
 
     {/* Floating quick-action buttons over the homepage, once the intro is gone. */}
     {dismissed && (
-      <div className="fixed bottom-8 left-8 z-[10000] flex gap-3 rounded-3xl bg-[#1f2b3b] p-3 shadow-lg shadow-black/20">
+      <div className="fixed bottom-8 left-8 z-[10000] flex gap-3 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-3 shadow-lg shadow-black/20 backdrop-blur-md">
         <IconActions withLabels uniform onAction={reopen} />
       </div>
     )}

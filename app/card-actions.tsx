@@ -12,7 +12,7 @@ export function IconActions({
   uniform?: boolean;
   onAction?: () => void;
 }) {
-  const sizing = withLabels ? "size-20 flex-col gap-1" : "size-16";
+  const sizing = withLabels ? "h-16 w-20 flex-col gap-1" : "size-16";
   const base = `flex ${sizing} cursor-pointer items-center justify-center rounded-3xl text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors`;
   const label = "text-xs font-medium";
 
@@ -54,7 +54,7 @@ export function IconActions({
         onClick={onAction}
         className={`${base} ${bookStyle}`}
       >
-        <Pencil className="size-6" />
+        <Pencil className="size-6 -scale-x-100" />
         {withLabels && <span className={label}>Consult</span>}
       </button>
       <button
@@ -106,7 +106,7 @@ export default function CardActions({
           Evaluation
         </span>
         <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#b7aa7f]/50 bg-[#b7aa7f]/80 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-          <Pencil className="size-4" />
+          <Pencil className="size-4 -scale-x-100" />
         </span>
       </button>
       <button
