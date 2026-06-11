@@ -32,13 +32,18 @@ const QUESTIONS = [
 
 export default function Overlay() {
   const [dismissed, setDismissed] = useState(false);
+  // 0 = first card fully shown, 1 = second card fully shown. Drives the
+  // scroll-linked crossfade between the two stacked cards.
+  const [progress, setProgress] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (dismissed) return;
     const el = e.currentTarget;
+    // Map the first viewport-height of scrolling to the 0→1 crossfade.
+    setProgress(el.scrollTop / el.clientHeight);
     // Dismiss once scrolled (almost) to the bottom — i.e. past the last card.
-    // The trailing spacer gives the room needed to reach the bottom.
+    // The trailing scroll track gives the room needed to reach the bottom.
     if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) {
       setDismissed(true);
     }
@@ -52,6 +57,7 @@ export default function Overlay() {
   useEffect(() => {
     if (!dismissed && scrollRef.current) {
       scrollRef.current.scrollTop = 0;
+      setProgress(0);
     }
   }, [dismissed]);
 
@@ -66,9 +72,29 @@ export default function Overlay() {
           : "overflow-y-auto opacity-100"
       }`}
     >
-      <section className="flex w-full flex-col items-center px-8 py-8 md:px-24">
-        <VideoCard />
-        <div className="relative mt-8 mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+      {/* Scroll track: tall enough to drive the crossfade, then the dismiss. */}
+      <div className="relative h-[300vh]">
+        <div className="sticky top-0 h-screen w-full">
+          <div className="relative h-full w-full">
+            {/* First card — fades out as you scroll. */}
+            <div
+              className="absolute inset-0 flex items-center justify-center px-8 py-8 md:px-24"
+              style={{
+                opacity: Math.min(Math.max(1 - progress, 0), 1),
+                pointerEvents: progress > 0.5 ? "none" : "auto",
+              }}
+            >
+              <VideoCard />
+            </div>
+            {/* Second card — crossfades in over the first. */}
+            <div
+              className="absolute inset-0 flex items-center justify-center px-8 py-8 md:px-24"
+              style={{
+                opacity: Math.min(Math.max(progress, 0), 1),
+                pointerEvents: progress > 0.5 ? "auto" : "none",
+              }}
+            >
+        <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
           {/* On-brand blurred gradient blobs contained within the card. */}
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -left-[10%] top-[5%] size-[45%] rounded-full bg-[#b7aa7f]/60 blur-3xl" />
@@ -150,11 +176,15 @@ export default function Overlay() {
           </div>
           <CardActions iconsOnly />
         </div>
-        <ChevronDown className="mt-[28vh] size-10 animate-bounce text-[#1f2b3b]/60" />
-      </section>
-
-      {/* Extra room so the user can scroll past the last card to trigger dismiss. */}
-      <div className="h-[25vh]" aria-hidden />
+            </div>
+            {/* Scroll hint — fades out as the crossfade begins. */}
+            <ChevronDown
+              className="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 animate-bounce text-white/70"
+              style={{ opacity: Math.min(Math.max(1 - progress * 2, 0), 1) }}
+            />
+          </div>
+        </div>
+      </div>
     </div>
 
     {/* Floating quick-action buttons over the homepage, once the intro is gone. */}
