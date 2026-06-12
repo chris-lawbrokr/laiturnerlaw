@@ -6,7 +6,7 @@ import CallCtaMenu from "./call-cta-menu";
 // search, call link, supporting copy, and CTA buttons layered on top.
 export default function VideoCard() {
   return (
-    <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] min-[1080px]:aspect-[1920/1080] min-[1080px]:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+    <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_10rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl text-[clamp(2rem,8vw,6rem)] font-bold text-[#111] min-[1080px]:aspect-[1920/1080] min-[1080px]:max-w-[min(100%,calc((100vh_-_10rem_-_8px)*16/9))]">
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/bg.mp4"

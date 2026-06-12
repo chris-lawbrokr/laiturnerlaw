@@ -155,7 +155,22 @@ export default function Overlay() {
               pointerEvents: step === 0 ? "auto" : "none",
             }}
           >
-            <VideoCard />
+            {/* Column matches the card's width so the wordmark can sit against
+                the card's right edge; equal flex spacers keep the card centered
+                and center the wordmark in the white gap below it. */}
+            <div className="flex h-full w-full max-w-[min(100%,calc((100vh_-_10rem_-_8px)*9/16))] flex-col min-[1080px]:max-w-[min(100%,calc((100vh_-_10rem_-_8px)*16/9))]">
+              <div className="min-h-0 flex-1" />
+              <div className="shrink-0">
+                <VideoCard />
+              </div>
+              <div className="flex min-h-0 flex-1 items-center justify-end py-2">
+                <img
+                  src="/images/boxii.svg"
+                  alt="Lai & Turner Law Firm PLLC"
+                  className="w-28 min-[1080px]:w-40"
+                />
+              </div>
+            </div>
           </div>
           {/* Second card — fades in over the first. */}
           <div
@@ -165,7 +180,7 @@ export default function Overlay() {
               pointerEvents: step === 1 ? "auto" : "none",
             }}
           >
-            <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 min-[1080px]:aspect-[1920/1080] min-[1080px]:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+            <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_10rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 min-[1080px]:aspect-[1920/1080] min-[1080px]:max-w-[min(100%,calc((100vh_-_10rem_-_8px)*16/9))]">
               {/* On-brand blurred gradient blobs contained within the card. */}
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute -left-[10%] top-[5%] size-[45%] rounded-full bg-[#b7aa7f]/60 blur-3xl" />
