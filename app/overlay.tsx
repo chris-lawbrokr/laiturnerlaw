@@ -149,7 +149,7 @@ export default function Overlay() {
         <div className="relative h-full w-full">
           {/* First card — fades out as the next step fades in. */}
           <div
-            className="absolute inset-0 flex items-center justify-center px-8 py-8 transition-opacity duration-700 ease-in-out md:px-24"
+            className="absolute inset-0 flex items-center justify-center px-8 py-8 transition-opacity duration-700 ease-in-out min-[1080px]:px-24"
             style={{
               opacity: step === 0 ? 1 : 0,
               pointerEvents: step === 0 ? "auto" : "none",
@@ -159,13 +159,13 @@ export default function Overlay() {
           </div>
           {/* Second card — fades in over the first. */}
           <div
-            className="absolute inset-0 flex items-center justify-center px-8 py-8 transition-opacity duration-700 ease-in-out md:px-24"
+            className="absolute inset-0 flex items-center justify-center px-8 py-8 transition-opacity duration-700 ease-in-out min-[1080px]:px-24"
             style={{
               opacity: step === 1 ? 1 : 0,
               pointerEvents: step === 1 ? "auto" : "none",
             }}
           >
-            <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
+            <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 min-[1080px]:aspect-[1920/1080] min-[1080px]:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
               {/* On-brand blurred gradient blobs contained within the card. */}
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute -left-[10%] top-[5%] size-[45%] rounded-full bg-[#b7aa7f]/60 blur-3xl" />
@@ -177,7 +177,7 @@ export default function Overlay() {
               <div className="absolute inset-0 bg-[#1f2b3b]/50 backdrop-blur-2xl" />
               <div className="relative z-10 flex w-full max-w-3xl flex-col items-center gap-6 px-8 text-white">
                 <h2
-                  className={`text-center text-3xl font-medium leading-tight md:text-5xl ${rhymesDisplay.className}`}
+                  className={`text-center text-3xl font-medium leading-tight min-[1080px]:text-5xl ${rhymesDisplay.className}`}
                 >
                   Let us know how we can <em>help</em>.
                 </h2>
@@ -202,7 +202,7 @@ export default function Overlay() {
                   />
                 </div>
 
-                <div className="hidden w-full flex-wrap items-center justify-center gap-3 md:flex">
+                <div className="hidden w-full flex-wrap items-center justify-center gap-3 min-[1080px]:flex">
                   <span className="text-base font-semibold text-white">
                     Need help with a:
                   </span>
@@ -255,11 +255,11 @@ export default function Overlay() {
       {dismissed && (
         <>
           {/* Mobile: full-width centered bar with evenly spread buttons. */}
-          <div className="fixed inset-x-6 bottom-6 z-[10000] flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:hidden">
+          <div className="fixed inset-x-6 bottom-6 z-[10000] flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md min-[1080px]:hidden">
             <IconActions withLabels uniform seamless fluid onAction={reopen} />
           </div>
           {/* Desktop: compact pill pinned bottom-left. */}
-          <div className="fixed bottom-8 left-8 z-[10000] hidden gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:flex">
+          <div className="fixed bottom-8 left-8 z-[10000] hidden gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md min-[1080px]:flex">
             <IconActions withLabels uniform seamless onAction={reopen} />
           </div>
         </>

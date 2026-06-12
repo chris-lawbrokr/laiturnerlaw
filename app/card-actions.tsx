@@ -101,11 +101,11 @@ export default function CardActions({
     return (
       <>
         {/* Mobile: full-width centered bar with evenly spread buttons. */}
-        <div className="absolute inset-x-6 bottom-6 z-10 flex gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:hidden">
+        <div className="absolute inset-x-6 bottom-6 z-10 flex gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md min-[1080px]:hidden">
           <IconActions withLabels uniform seamless fluid />
         </div>
         {/* Desktop: compact pill pinned bottom-right. */}
-        <div className="absolute bottom-8 right-8 z-10 hidden gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:flex">
+        <div className="absolute bottom-8 right-8 z-10 hidden gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md min-[1080px]:flex">
           <IconActions withLabels uniform seamless />
         </div>
       </>
@@ -115,7 +115,7 @@ export default function CardActions({
   return (
     <>
       {/* Mobile: three even buttons spread across the bottom. */}
-      <div className="absolute inset-x-6 bottom-6 z-10 flex gap-3 md:hidden">
+      <div className="absolute inset-x-6 bottom-6 z-10 flex gap-3 min-[1080px]:hidden">
         <a
           href="tel:+14055550199"
           aria-label="Call us"
@@ -141,7 +141,7 @@ export default function CardActions({
       </div>
 
       {/* Desktop: the original mixed-size CTA row, pinned bottom-right. */}
-      <div className="absolute bottom-8 right-8 z-10 hidden gap-4 md:flex">
+      <div className="absolute bottom-8 right-8 z-10 hidden gap-4 min-[1080px]:flex">
         <a
           href="tel:+14055550199"
           aria-label="Call us"
