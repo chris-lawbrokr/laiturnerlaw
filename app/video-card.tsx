@@ -43,10 +43,16 @@ export default function VideoCard() {
           <circle cx="11" cy="11" r="7" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
+        {/* Mobile uses a shorter placeholder so it never clips at the call button. */}
+        <input
+          type="text"
+          placeholder="How can we help"
+          className="w-full bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:hidden"
+        />
         <input
           type="text"
           placeholder="How can we help you today?"
-          className="w-full bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:w-56"
+          className="hidden w-full bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:block md:w-56"
         />
       </div>
       {/* Desktop: full call + CTA pills. Mobile: a single circular dropdown. */}
