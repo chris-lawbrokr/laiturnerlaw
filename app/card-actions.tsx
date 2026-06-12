@@ -7,14 +7,20 @@ export function IconActions({
   withLabels = false,
   uniform = false,
   seamless = false,
+  fluid = false,
   onAction,
 }: {
   withLabels?: boolean;
   uniform?: boolean;
   seamless?: boolean;
+  // `fluid` lets the three buttons grow to fill (flex-1) instead of a fixed
+  // width, so they can spread evenly across a full-width bar.
+  fluid?: boolean;
   onAction?: () => void;
 }) {
-  const sizing = withLabels ? "h-16 w-20 flex-col gap-1" : "size-16";
+  const sizing = withLabels
+    ? `h-16 ${fluid ? "flex-1" : "w-20"} flex-col gap-1`
+    : "size-16";
   const base = `flex ${sizing} cursor-pointer items-center justify-center rounded-2xl text-white transition-colors ${
     seamless ? "" : "shadow-lg shadow-black/10 backdrop-blur-md"
   }`;
@@ -93,9 +99,16 @@ export default function CardActions({
 }) {
   if (iconsOnly) {
     return (
-      <div className="absolute bottom-8 right-8 z-10 flex gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md">
-        <IconActions withLabels uniform seamless />
-      </div>
+      <>
+        {/* Mobile: full-width centered bar with evenly spread buttons. */}
+        <div className="absolute inset-x-6 bottom-6 z-10 flex gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:hidden">
+          <IconActions withLabels uniform seamless fluid />
+        </div>
+        {/* Desktop: compact pill pinned bottom-right. */}
+        <div className="absolute bottom-8 right-8 z-10 hidden gap-1 rounded-3xl border border-white/40 bg-white/20 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:flex">
+          <IconActions withLabels uniform seamless />
+        </div>
+      </>
     );
   }
 

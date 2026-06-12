@@ -202,7 +202,7 @@ export default function Overlay() {
                   />
                 </div>
 
-                <div className="flex w-full flex-wrap items-center justify-center gap-3">
+                <div className="hidden w-full flex-wrap items-center justify-center gap-3 md:flex">
                   <span className="text-base font-semibold text-white">
                     Need help with a:
                   </span>
