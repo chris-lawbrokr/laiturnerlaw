@@ -253,9 +253,16 @@ export default function Overlay() {
 
       {/* Floating quick-action buttons over the homepage, once the intro is gone. */}
       {dismissed && (
-        <div className="fixed bottom-8 left-8 z-[10000] flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md">
-          <IconActions withLabels uniform seamless onAction={reopen} />
-        </div>
+        <>
+          {/* Mobile: full-width centered bar with evenly spread buttons. */}
+          <div className="fixed inset-x-6 bottom-6 z-[10000] flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:hidden">
+            <IconActions withLabels uniform seamless fluid onAction={reopen} />
+          </div>
+          {/* Desktop: compact pill pinned bottom-left. */}
+          <div className="fixed bottom-8 left-8 z-[10000] hidden gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md md:flex">
+            <IconActions withLabels uniform seamless onAction={reopen} />
+          </div>
+        </>
       )}
     </>
   );
