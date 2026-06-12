@@ -31,7 +31,7 @@ export default function CallCtaMenu() {
             onClick={() => setOpen(false)}
             className="fixed inset-0 z-0 cursor-default"
           />
-          <div className="absolute right-0 top-full z-10 mt-2 flex w-56 flex-col gap-1 rounded-2xl border border-white/30 bg-[#1f2b3b]/70 p-2 text-white shadow-lg shadow-black/20 backdrop-blur-md">
+          <div className="absolute right-0 top-full z-10 mt-2 flex w-56 flex-col gap-1 rounded-2xl border border-white/30 bg-white/10 p-2 text-white shadow-lg shadow-black/10 backdrop-blur-md">
             <a
               href="tel:+14055550199"
               className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-normal transition-colors hover:bg-white/15"

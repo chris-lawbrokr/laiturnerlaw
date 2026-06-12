@@ -29,7 +29,7 @@ export default function VideoCard() {
         alt="Lai & Turner Law Firm PLLC — The People's Attorney"
         className="absolute left-1/2 top-8 hidden max-w-[150px] -translate-x-1/2 md:block"
       />
-      <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-md md:left-8 md:top-8">
+      <div className="absolute left-6 right-20 top-6 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-md md:left-8 md:right-auto md:top-8">
         <svg
           className="h-5 w-5 shrink-0 text-white/80"
           viewBox="0 0 24 24"
@@ -46,7 +46,7 @@ export default function VideoCard() {
         <input
           type="text"
           placeholder="How can we help you today?"
-          className="w-24 bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:w-56"
+          className="w-full bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:w-56"
         />
       </div>
       {/* Desktop: full call + CTA pills. Mobile: a single circular dropdown. */}
