@@ -30,70 +30,133 @@ const QUESTIONS = [
 // fades the overlay out to reveal the homepage. Placeholder text for now so
 // the frame flow can be verified.
 
+// Index of the final intro card (the chat card). Stepping past it dismisses.
+const LAST_STEP = 1;
+
 export default function Overlay() {
+  // Which intro card is in view: 0 = video card, 1 = chat card.
+  const [step, setStep] = useState(0);
   const [dismissed, setDismissed] = useState(false);
-  // 0 = first card fully shown, 1 = second card fully shown. Drives the
-  // scroll-linked crossfade between the two stacked cards.
-  const [progress, setProgress] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // Once the fade-out finishes we fully remove the overlay (display:none) so it
+  // no longer sits over the homepage — `pointer-events-none` alone doesn't
+  // reliably let scroll/wheel reach the iframe behind it.
+  const [hidden, setHidden] = useState(false);
 
-  const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    if (dismissed) return;
-    const el = e.currentTarget;
-    // Map the first viewport-height of scrolling to the 0→1 crossfade.
-    setProgress(el.scrollTop / el.clientHeight);
-    // Dismiss once scrolled (almost) to the bottom — i.e. past the last card.
-    // The trailing scroll track gives the room needed to reach the bottom.
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 4) {
-      setDismissed(true);
-    }
-  };
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stepRef = useRef(0);
+  const lockedRef = useRef(false);
+  const idleTimerRef = useRef<number | null>(null);
 
-  // Reopen the intro and start it back at the top.
-  const reopen = () => setDismissed(false);
+  // Intercept wheel/touch so ONE gesture advances roughly ONE step — a fast
+  // trackpad swoop can't blow through every card to the end. After a step we
+  // lock for a short, FIXED cooldown rather than waiting for all inertia to
+  // die: that wait (momentum keeps the lock alive) is what made stepping —
+  // and especially exiting — feel rigid. With a fixed cooldown the next
+  // deliberate scroll advances promptly while a flick's residual momentum is
+  // absorbed.
+  const COOLDOWN = 420;
 
-  // Whenever the overlay is (re)opened, reset its scroll position to the top so
-  // it doesn't immediately re-trigger the bottom-of-scroll dismiss.
   useEffect(() => {
-    if (!dismissed && scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
-      setProgress(0);
-    }
-  }, [dismissed]);
+    const el = containerRef.current;
+    if (!el) return;
+
+    const advance = (dir: number) => {
+      const next = stepRef.current + dir;
+      if (next < 0) return; // already on the first card
+      if (next > LAST_STEP) {
+        setDismissed(true); // stepping past the last card fades into the page
+        return;
+      }
+      stepRef.current = next;
+      setStep(next);
+    };
+
+    const lock = () => {
+      lockedRef.current = true;
+      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = window.setTimeout(() => {
+        lockedRef.current = false;
+      }, COOLDOWN);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (lockedRef.current) return;
+      if (Math.abs(e.deltaY) < 8) return;
+      lock();
+      advance(e.deltaY > 0 ? 1 : -1);
+    };
+
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0].clientY;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      if (lockedRef.current) return;
+      const dy = touchY - e.touches[0].clientY;
+      if (Math.abs(dy) < 40) return;
+      lockedRef.current = true;
+      advance(dy > 0 ? 1 : -1);
+    };
+    const onTouchEnd = () => {
+      lockedRef.current = false;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("touchstart", onTouchStart, { passive: false });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+    };
+  }, []);
+
+  // Reopen the intro from the very first card.
+  const reopen = () => {
+    stepRef.current = 0;
+    lockedRef.current = false;
+    setStep(0);
+    setHidden(false);
+    setDismissed(false);
+  };
 
   return (
     <>
     <div
-      ref={scrollRef}
-      onScroll={onScroll}
-      className={`fixed inset-0 z-[9999] bg-white transition-opacity duration-[600ms] ease-in-out ${
-        dismissed
-          ? "pointer-events-none overflow-hidden opacity-0"
-          : "overflow-y-auto opacity-100"
-      }`}
+      ref={containerRef}
+      onTransitionEnd={(e) => {
+        // Only the container's own fade-out should hide it — ignore bubbled
+        // transitionend events from the card crossfades.
+        if (dismissed && e.target === e.currentTarget) setHidden(true);
+      }}
+      className={`fixed inset-0 z-[9999] overflow-hidden bg-white transition-opacity duration-[700ms] ease-in-out ${
+        hidden ? "hidden" : ""
+      } ${dismissed ? "pointer-events-none opacity-0" : "opacity-100"}`}
     >
-      {/* Scroll track: tall enough to drive the crossfade, then the dismiss. */}
-      <div className="relative h-[300vh]">
-        <div className="sticky top-0 h-screen w-full">
-          <div className="relative h-full w-full">
-            {/* First card — fades out as you scroll. */}
-            <div
-              className="absolute inset-0 flex items-center justify-center px-8 py-8 md:px-24"
-              style={{
-                opacity: Math.min(Math.max(1 - progress, 0), 1),
-                pointerEvents: progress > 0.5 ? "none" : "auto",
-              }}
-            >
-              <VideoCard />
-            </div>
-            {/* Second card — crossfades in over the first. */}
-            <div
-              className="absolute inset-0 flex items-center justify-center px-8 py-8 md:px-24"
-              style={{
-                opacity: Math.min(Math.max(progress, 0), 1),
-                pointerEvents: progress > 0.5 ? "auto" : "none",
-              }}
-            >
+      <div className="relative h-full w-full">
+        {/* First card — fades out as the next step fades in. */}
+        <div
+          className="absolute inset-0 flex items-center justify-center px-8 py-8 transition-opacity duration-700 ease-in-out md:px-24"
+          style={{
+            opacity: step === 0 ? 1 : 0,
+            pointerEvents: step === 0 ? "auto" : "none",
+          }}
+        >
+          <VideoCard />
+        </div>
+        {/* Second card — fades in over the first. */}
+        <div
+          className="absolute inset-0 flex items-center justify-center px-8 py-8 transition-opacity duration-700 ease-in-out md:px-24"
+          style={{
+            opacity: step === 1 ? 1 : 0,
+            pointerEvents: step === 1 ? "auto" : "none",
+          }}
+        >
         <div className="relative mx-auto flex aspect-[1080/1920] w-full max-w-[min(100%,calc((100vh_-_4rem_-_8px)*9/16))] items-center justify-center overflow-hidden rounded-4xl border border-white/30 bg-gradient-to-br from-[#fdfaf3] via-[#f7f1e4] to-[#f1e8d6] text-[clamp(2rem,8vw,6rem)] font-bold text-white shadow-lg shadow-black/10 md:aspect-[1920/1080] md:max-w-[min(100%,calc((100vh_-_4rem_-_8px)*16/9))]">
           {/* On-brand blurred gradient blobs contained within the card. */}
           <div className="pointer-events-none absolute inset-0">
@@ -176,14 +239,12 @@ export default function Overlay() {
           </div>
           <CardActions iconsOnly />
         </div>
-            </div>
-            {/* Scroll hint — fades out as the crossfade begins. */}
-            <ChevronDown
-              className="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 animate-bounce text-white/70"
-              style={{ opacity: Math.min(Math.max(1 - progress * 2, 0), 1) }}
-            />
-          </div>
         </div>
+        {/* Scroll hint — invites the next scroll; fades as the intro dismisses. */}
+        <ChevronDown
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 animate-bounce text-white/70 transition-opacity duration-500"
+          style={{ opacity: dismissed ? 0 : 0.8 }}
+        />
       </div>
     </div>
 
