@@ -248,11 +248,6 @@ export default function Overlay() {
               <CardActions iconsOnly />
             </div>
           </div>
-          {/* Scroll hint — invites the next scroll; fades as the intro dismisses. */}
-          <ChevronDown
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 size-10 animate-bounce text-white/70 transition-opacity duration-500"
-            style={{ opacity: dismissed ? 0 : 0.8 }}
-          />
         </div>
       </div>
 
