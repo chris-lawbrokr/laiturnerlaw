@@ -116,7 +116,7 @@ export default function CardActions({
           className="flex flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#b7aa7f]/50 bg-[#b7aa7f]/70 py-3 text-center text-sm font-medium leading-tight text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#b7aa7f]/45"
         >
           <Pencil className="size-5 -scale-x-100" />
-          Free Case Eval
+          Consult
         </button>
         <button
           type="button"
