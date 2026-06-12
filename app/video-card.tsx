@@ -1,5 +1,6 @@
 import { rhymesDisplay } from "./fonts";
 import CardActions from "./card-actions";
+import CallCtaMenu from "./call-cta-menu";
 
 // The hero video card: looping background video with the firm's branding,
 // search, call link, supporting copy, and CTA buttons layered on top.
@@ -22,12 +23,13 @@ export default function VideoCard() {
           className="max-w-[130px]"
         />
       </div> */}
+      {/* Hidden on mobile so the search bar can own the top row. */}
       <img
         src="/images/logo.png"
         alt="Lai & Turner Law Firm PLLC — The People's Attorney"
-        className="absolute left-1/2 top-8 max-w-[150px] -translate-x-1/2"
+        className="absolute left-1/2 top-8 hidden max-w-[150px] -translate-x-1/2 md:block"
       />
-      <div className="absolute left-8 top-8 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-md">
+      <div className="absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-white shadow-lg shadow-black/10 backdrop-blur-md md:left-8 md:top-8">
         <svg
           className="h-5 w-5 shrink-0 text-white/80"
           viewBox="0 0 24 24"
@@ -44,10 +46,11 @@ export default function VideoCard() {
         <input
           type="text"
           placeholder="How can we help you today?"
-          className="w-40 bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:w-56"
+          className="w-24 bg-transparent text-base font-normal text-white placeholder:text-white/70 focus:outline-none md:w-56"
         />
       </div>
-      <div className="absolute right-8 top-8 flex items-center gap-3">
+      {/* Desktop: full call + CTA pills. Mobile: a single circular dropdown. */}
+      <div className="absolute right-6 top-6 hidden items-center gap-3 md:right-8 md:top-8 md:flex">
         <button
           type="button"
           className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3 text-base font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
@@ -73,16 +76,21 @@ export default function VideoCard() {
           (405) 555-0199
         </a>
       </div>
+      <div className="absolute right-6 top-6 md:hidden">
+        <CallCtaMenu />
+      </div>
       <span
-        className={`relative text-center text-[#e3d9bf] ${rhymesDisplay.className}`}
+        className={`relative px-10 text-center text-[clamp(2.25rem,11vw,3.5rem)] leading-[1.1] text-[#e3d9bf] md:px-0 md:text-[clamp(2rem,8vw,6rem)] ${rhymesDisplay.className}`}
       >
-        The People's Attorney
+        The People's
+        <br className="md:hidden" /> Attorney
       </span>
-      <div className="absolute bottom-8 left-8 max-w-[55%] text-left text-white">
-        <p className="text-sm font-normal md:text-sm mb-4">
+      {/* Supporting copy is desktop-only; the mobile card stays uncluttered. */}
+      <div className="absolute bottom-8 left-8 hidden max-w-[55%] text-left text-white md:block">
+        <p className="mb-4 text-sm font-normal">
           <b>Top-Reviewed Lawyers Serving Oklahoma City</b>
         </p>
-        <p className="mt-2 text-sm font-normal leading-tight max-w-[400px]">
+        <p className="mt-2 max-w-[400px] text-sm font-normal leading-tight">
           We’re different from other law firms in OKC. Younger, more innovative,
           and with the dynamic energy that your complex legal matter needs.
           We’re tough on the opposition and fiercely dedicated to your rights.
