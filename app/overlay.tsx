@@ -6,12 +6,11 @@ import {
   ArrowUpRight,
   HeartHandshake,
   Globe,
+  LayoutDashboard,
   Phone,
   Scale,
-  X,
   type LucideIcon,
 } from "lucide-react";
-import { IconActions } from "./card-actions";
 import { rhymesDisplay } from "./fonts";
 
 // ---- Card content ----------------------------------------------------------
@@ -95,18 +94,9 @@ const INFO_CARDS: InfoCard[] = [
   },
 ];
 
-const TESTIMONIAL = {
-  quote:
-    "They treated my case like it was the only one that mattered. I never felt like just another file.",
-  author: "Maria G., Oklahoma City",
-  avatar: "/images/logo.png",
-};
-
 // ---- Overlay ---------------------------------------------------------------
 // A single scrollable intro card. Scrolling past it — or pressing "Main site" —
 // fades the overlay out to reveal the homepage.
-
-const LAST_STEP = 0;
 
 export default function Overlay() {
   const [activeTab, setActiveTab] = useState(TABS[0].id);
@@ -115,82 +105,20 @@ export default function Overlay() {
   // no longer sits over the homepage.
   const [hidden, setHidden] = useState(false);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const stepRef = useRef(0);
-  const lockedRef = useRef(false);
-  const idleTimerRef = useRef<number | null>(null);
-
-  // One gesture moves exactly one step (see prior notes) — here that means one
-  // deliberate scroll dismisses the single card.
-  const NEW_GESTURE = 6;
-  const MOMENTUM_FLOOR = 4;
-  const QUIET_MS = 80;
-
+  // Escape closes the overlay (matching Boxii); dismissal is otherwise driven by
+  // the "Main site" button — there is no scroll/swipe-to-dismiss.
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const advance = (dir: number) => {
-      const next = stepRef.current + dir;
-      if (next < 0) return;
-      if (next > LAST_STEP) {
-        setDismissed(true);
-        return;
-      }
-      stepRef.current = next;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDismissed(true);
     };
-
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
-      if (Math.abs(e.deltaY) >= MOMENTUM_FLOOR) {
-        if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-        idleTimerRef.current = window.setTimeout(() => {
-          lockedRef.current = false;
-        }, QUIET_MS);
-      }
-
-      if (lockedRef.current) return;
-      if (Math.abs(e.deltaY) < NEW_GESTURE) return;
-      lockedRef.current = true;
-      advance(e.deltaY > 0 ? 1 : -1);
-    };
-
-    let touchY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchY = e.touches[0].clientY;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      if (lockedRef.current) return;
-      const dy = touchY - e.touches[0].clientY;
-      if (Math.abs(dy) < 40) return;
-      lockedRef.current = true;
-      advance(dy > 0 ? 1 : -1);
-    };
-    const onTouchEnd = () => {
-      lockedRef.current = false;
-    };
-
-    el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("touchstart", onTouchStart, { passive: false });
-    el.addEventListener("touchmove", onTouchMove, { passive: false });
-    el.addEventListener("touchend", onTouchEnd);
-    return () => {
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("touchstart", onTouchStart);
-      el.removeEventListener("touchmove", onTouchMove);
-      el.removeEventListener("touchend", onTouchEnd);
-      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
-    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const dismiss = () => setDismissed(true);
 
   // Reopen the intro from the first tab.
   const reopen = () => {
-    stepRef.current = 0;
-    lockedRef.current = false;
     setActiveTab(TABS[0].id);
     setHidden(false);
     setDismissed(false);
@@ -201,7 +129,6 @@ export default function Overlay() {
   return (
     <>
       <div
-        ref={containerRef}
         onTransitionEnd={(e) => {
           if (dismissed && e.target === e.currentTarget) setHidden(true);
         }}
@@ -268,14 +195,6 @@ export default function Overlay() {
               >
                 Free consultation
               </button>
-              <button
-                type="button"
-                aria-label="Close"
-                onClick={dismiss}
-                className="flex size-10 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
-              >
-                <X className="size-4" />
-              </button>
             </div>
 
             {/* ---- Hero: swaps with the active tab ---- */}
@@ -316,26 +235,8 @@ export default function Overlay() {
               </div>
             </div>
 
-            {/* ---- Bottom bar (desktop): testimonial + info cards + Main site ---- */}
+            {/* ---- Bottom bar (desktop): info cards + Main site ---- */}
             <div className="absolute inset-x-8 bottom-8 z-10 hidden items-stretch gap-4 min-[1080px]:flex">
-              {/* Testimonial */}
-              <div className="flex h-28 flex-[1.7] items-center gap-4 rounded-3xl border border-white/25 bg-white/10 px-6 text-left shadow-lg shadow-black/10 backdrop-blur-md">
-                <img
-                  src={TESTIMONIAL.avatar}
-                  alt=""
-                  aria-hidden
-                  className="size-12 shrink-0 rounded-full bg-white/90 object-contain p-1.5"
-                />
-                <div className="min-w-0">
-                  <p className="line-clamp-3 text-sm font-normal leading-snug text-white">
-                    “{TESTIMONIAL.quote}”
-                  </p>
-                  <span className="mt-1 block text-xs font-semibold text-white/70">
-                    {TESTIMONIAL.author}
-                  </span>
-                </div>
-              </div>
-
               {/* Info cards */}
               {INFO_CARDS.map((c) => (
                 <button
@@ -389,17 +290,92 @@ export default function Overlay() {
         </div>
       </div>
 
-      {/* Floating quick-action buttons over the homepage, once the intro is gone. */}
-      {dismissed && (
-        <>
-          <div className="fixed inset-x-6 bottom-6 z-[10000] flex gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md min-[1080px]:hidden">
-            <IconActions withLabels uniform seamless fluid onAction={reopen} />
-          </div>
-          <div className="fixed bottom-8 left-8 z-[10000] hidden gap-1 rounded-3xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/55 p-2 shadow-lg shadow-black/20 backdrop-blur-md min-[1080px]:flex">
-            <IconActions withLabels uniform seamless onAction={reopen} />
-          </div>
-        </>
-      )}
+      {/* Collapsed "mini Boxii" launcher over the homepage, once the intro is gone:
+          a single circular FAB that toggles a small link menu. */}
+      {dismissed && <MiniLauncher onReopen={reopen} />}
     </>
+  );
+}
+
+// The floating launcher shown after the overlay is dismissed. A circular FAB
+// pinned bottom-left toggles a small popup list (CTAs + reopen), mirroring the
+// Boxii launcher. Closes on outside-click or Escape.
+function MiniLauncher({ onReopen }: { onReopen: () => void }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDown = (e: PointerEvent) => {
+      if (
+        open &&
+        rootRef.current &&
+        !rootRef.current.contains(e.target as Node)
+      )
+        setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (open && e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown, true);
+    document.addEventListener("keydown", onKey, true);
+    return () => {
+      document.removeEventListener("pointerdown", onDown, true);
+      document.removeEventListener("keydown", onKey, true);
+    };
+  }, [open]);
+
+  const item =
+    "flex w-full items-center px-4 py-3 text-left text-sm font-medium text-white no-underline transition-colors hover:bg-white/10";
+
+  return (
+    <div
+      ref={rootRef}
+      className="fixed bottom-6 left-6 z-[10000] flex flex-col items-start gap-2.5 min-[1080px]:bottom-8 min-[1080px]:left-8"
+    >
+      {open && (
+        <div
+          role="menu"
+          className="hero-fade flex min-w-[220px] flex-col divide-y divide-white/10 overflow-hidden rounded-2xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/70 shadow-lg shadow-black/25 backdrop-blur-md"
+        >
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+            className={item}
+          >
+            Free consultation
+          </button>
+          <a
+            role="menuitem"
+            href="tel:+14055550199"
+            onClick={() => setOpen(false)}
+            className={item}
+          >
+            Call (405) 555-0199
+          </a>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onReopen();
+            }}
+            className={item}
+          >
+            Site Navigation
+          </button>
+        </div>
+      )}
+      <button
+        type="button"
+        aria-label="Open menu"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className="flex size-14 items-center justify-center rounded-full border border-[#1f2b3b]/50 bg-[#1f2b3b]/60 text-white shadow-lg shadow-black/25 backdrop-blur-md transition-transform hover:-translate-y-0.5"
+      >
+        <LayoutDashboard className="size-6" />
+      </button>
+    </div>
   );
 }
