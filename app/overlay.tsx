@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   Phone,
   Scale,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { rhymesDisplay } from "./fonts";
@@ -18,7 +19,17 @@ import { rhymesDisplay } from "./fonts";
 // (headline / subhead / chips / CTA), and a shared bottom bar shows a
 // testimonial alongside a couple of info cards and a "Main site" button.
 
-type Chip = { icon: LucideIcon; label: string };
+type Chip = {
+  icon: LucideIcon;
+  label: string;
+  // When a chip carries a title/body it opens an answer popup (with a "Learn
+  // More" link) instead of routing to a link.
+  title?: string;
+  body?: string;
+  learnMore?: string;
+  // A plain link chip (no popup). Defaults to the intake flow when omitted.
+  href?: string;
+};
 
 type Tab = {
   id: string;
@@ -28,12 +39,14 @@ type Tab = {
   subhead: string;
   chips?: Chip[];
   cta: string;
+  // Where the hero CTA points. Defaults to the Lawbrokr intake flow (CTA_URL).
+  ctaHref?: string;
 };
 
 const TABS: Tab[] = [
   {
     id: "new",
-    label: "New here",
+    label: "Home",
     headline: (
       <>
         The People&apos;s <span className="text-[#e3d9bf]">Attorney</span>
@@ -42,9 +55,27 @@ const TABS: Tab[] = [
     subhead:
       "Top-reviewed lawyers serving Oklahoma City. Tough on the opposition, fiercely dedicated to your rights.",
     chips: [
-      { icon: HeartHandshake, label: "Family Matter" },
-      { icon: Globe, label: "Immigration Matter" },
-      { icon: Scale, label: "Criminal Matter" },
+      {
+        icon: Scale,
+        label: "Criminal Defense",
+        title: "Criminal Defense",
+        body: "Criminal defense lawyers represent individuals who have been arrested, charged with a crime, or who are under investigation by the police. Our criminal defense attorneys protect your rights, build a strong defense, and negotiate a positive outcome with the prosecutor.",
+        learnMore: "https://www.laiturnerlaw.com/criminal-defense/",
+      },
+      {
+        icon: HeartHandshake,
+        label: "Family Law",
+        title: "Family Law",
+        body: "Family law encompasses the legal aspects of relationships, including child custody, divorce, grandparents' rights, and adoption. Our lawyers can represent you as you change your legal obligations to another person or revise an existing court order (such as a child support modification).",
+        learnMore: "https://www.laiturnerlaw.com/family-law/",
+      },
+      {
+        icon: Globe,
+        label: "Immigration",
+        title: "Immigration",
+        body: "Immigration law deals with the rights of people to enter the U.S. for vacations, to live, and to work. It sets conditions for people to emigrate to the country and conditions by which people are deported. Our immigration lawyer helps with visas, green cards, citizenship, asylum, and deportation defense.",
+        learnMore: "https://www.laiturnerlaw.com/immigration/",
+      },
     ],
     cta: "Get a free case evaluation",
   },
@@ -59,11 +90,30 @@ const TABS: Tab[] = [
     subhead:
       "Criminal defense, immigration, and family law representation for the people of Oklahoma City.",
     chips: [
-      { icon: Scale, label: "Criminal Defense" },
-      { icon: Globe, label: "Immigration" },
-      { icon: HeartHandshake, label: "Family Law" },
+      {
+        icon: Scale,
+        label: "Criminal Defense",
+        title: "Criminal Defense",
+        body: "Criminal defense lawyers represent individuals who have been arrested, charged with a crime, or who are under investigation by the police. Our criminal defense attorneys protect your rights, build a strong defense, and negotiate a positive outcome with the prosecutor.",
+        learnMore: "https://www.laiturnerlaw.com/criminal-defense/",
+      },
+      {
+        icon: Globe,
+        label: "Immigration",
+        title: "Immigration Law",
+        body: "Immigration law deals with the rights of people to enter the U.S. for vacations, to live, and to work. It sets conditions for people to emigrate to the country and conditions by which people are deported. Our immigration lawyer helps with visas, green cards, citizenship, asylum, and deportation defense.",
+        learnMore: "https://www.laiturnerlaw.com/immigration/",
+      },
+      {
+        icon: HeartHandshake,
+        label: "Family Law",
+        title: "Family Law",
+        body: "Family law encompasses the legal aspects of relationships, including child custody, divorce, grandparents' rights, and adoption. Our lawyers can represent you as you change your legal obligations to another person or revise an existing court order (such as a child support modification).",
+        learnMore: "https://www.laiturnerlaw.com/family-law/",
+      },
     ],
     cta: "Explore practice areas",
+    ctaHref: "https://www.laiturnerlaw.com/areas-of-practice/",
   },
   {
     id: "firm",
@@ -76,6 +126,7 @@ const TABS: Tab[] = [
     subhead:
       "Younger, more innovative, and with the dynamic energy your complex legal matter needs.",
     cta: "Meet the attorneys",
+    ctaHref: "https://www.laiturnerlaw.com/our-team/",
   },
 ];
 
@@ -94,6 +145,11 @@ const INFO_CARDS: InfoCard[] = [
   },
 ];
 
+// Every conversion CTA (hero button, chips, info cards, "Free consultation")
+// routes to the firm's Lawbrokr intake flow.
+const CTA_URL =
+  "https://laiturnerlaw.lawbrokr.com/?utm_source=google&utm_medium=organic&landed_url=https%3A%2F%2Fwww.laiturnerlaw.com%2F&engaged_url=https%3A%2F%2Fwww.laiturnerlaw.com%2F";
+
 // ---- Overlay ---------------------------------------------------------------
 // A single scrollable intro card. Scrolling past it — or pressing "Main site" —
 // fades the overlay out to reveal the homepage.
@@ -104,16 +160,20 @@ export default function Overlay() {
   // Once the fade-out finishes we fully remove the overlay (display:none) so it
   // no longer sits over the homepage.
   const [hidden, setHidden] = useState(false);
+  // The practice-area chip whose answer popup is open (null = none).
+  const [openChip, setOpenChip] = useState<Chip | null>(null);
 
-  // Escape closes the overlay (matching Boxii); dismissal is otherwise driven by
-  // the "Main site" button — there is no scroll/swipe-to-dismiss.
+  // Escape closes the open chip popup first, otherwise the overlay (matching
+  // Boxii); dismissal is otherwise driven by the "Main site" button.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setDismissed(true);
+      if (e.key !== "Escape") return;
+      if (openChip) setOpenChip(null);
+      else setDismissed(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [openChip]);
 
   const dismiss = () => setDismissed(true);
 
@@ -154,7 +214,7 @@ export default function Overlay() {
             <img
               src="/images/logo.png"
               alt="Lai & Turner Law Firm PLLC"
-              className="absolute left-8 top-8 z-20 hidden h-10 object-contain object-left min-[1080px]:block"
+              className="absolute left-8 top-8 z-20 hidden h-14 object-contain object-left min-[1080px]:block"
             />
 
             {/* Top-center tabs. Scrolls horizontally if it can't fit. */}
@@ -167,7 +227,10 @@ export default function Overlay() {
                     type="button"
                     role="tab"
                     aria-selected={active}
-                    onClick={() => setActiveTab(t.id)}
+                    onClick={() => {
+                      setActiveTab(t.id);
+                      setOpenChip(null);
+                    }}
                     className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                       active
                         ? "bg-white text-[#1f2b3b]"
@@ -189,12 +252,14 @@ export default function Overlay() {
                 <Phone className="size-4 text-white/80" />
                 Call us
               </a>
-              <button
-                type="button"
+              <a
+                href={CTA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full bg-[#b7aa7f] px-5 py-2.5 text-sm font-semibold text-[#1f2b3b] shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#c7ba8f]"
               >
                 Free consultation
-              </button>
+              </a>
             </div>
 
             {/* ---- Hero: swaps with the active tab ---- */}
@@ -213,25 +278,46 @@ export default function Overlay() {
                 </p>
                 {tab.chips && (
                   <div className="flex flex-wrap items-center justify-center gap-3">
-                    {tab.chips.map(({ icon: Icon, label }) => (
-                      <button
-                        key={label}
-                        type="button"
-                        className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
-                      >
-                        <Icon className="size-4 text-white/80" />
-                        {label}
-                      </button>
-                    ))}
+                    {tab.chips.map((chip) => {
+                      const Icon = chip.icon;
+                      const cls =
+                        "flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20";
+                      // Chips with body copy open an answer popup; the rest route
+                      // straight to the intake flow.
+                      return chip.body ? (
+                        <button
+                          key={chip.label}
+                          type="button"
+                          onClick={() => setOpenChip(chip)}
+                          className={cls}
+                        >
+                          <Icon className="size-4 text-white/80" />
+                          {chip.label}
+                        </button>
+                      ) : (
+                        <a
+                          key={chip.label}
+                          href={chip.href ?? CTA_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cls}
+                        >
+                          <Icon className="size-4 text-white/80" />
+                          {chip.label}
+                        </a>
+                      );
+                    })}
                   </div>
                 )}
-                <button
-                  type="button"
+                <a
+                  href={tab.ctaHref ?? CTA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-1 flex items-center gap-2 rounded-xl bg-[#b7aa7f] px-6 py-3 text-base font-semibold text-[#1f2b3b] shadow-lg shadow-black/10 transition-colors hover:bg-[#c7ba8f]"
                 >
                   {tab.cta}
                   <ArrowRight className="size-4" />
-                </button>
+                </a>
               </div>
             </div>
 
@@ -239,9 +325,11 @@ export default function Overlay() {
             <div className="absolute inset-x-8 bottom-8 z-10 hidden items-stretch gap-4 min-[1080px]:flex">
               {/* Info cards */}
               {INFO_CARDS.map((c) => (
-                <button
+                <a
                   key={c.title}
-                  type="button"
+                  href={CTA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex h-28 flex-1 flex-col justify-center gap-1 overflow-hidden rounded-3xl border border-white/25 bg-white/10 px-5 text-left shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
                 >
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-white/60">
@@ -254,7 +342,7 @@ export default function Overlay() {
                     {c.cta}
                     <ArrowRight className="size-3" />
                   </span>
-                </button>
+                </a>
               ))}
 
               {/* Main site */}
@@ -278,14 +366,60 @@ export default function Overlay() {
                 <ArrowUpRight className="size-5" />
                 Main site
               </button>
-              <button
-                type="button"
+              <a
+                href={CTA_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl bg-[#b7aa7f] py-3 text-sm font-semibold text-[#1f2b3b] shadow-lg shadow-black/10 transition-colors hover:bg-[#c7ba8f]"
               >
                 <Phone className="size-5" />
                 Free consultation
-              </button>
+              </a>
             </div>
+
+            {/* ---- Chip answer popup (practice-area details) ---- */}
+            {openChip && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center p-6">
+                <button
+                  type="button"
+                  aria-label="Close"
+                  onClick={() => setOpenChip(null)}
+                  className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                />
+                <div className="hero-fade relative z-10 w-full max-w-2xl rounded-3xl border border-white/40 bg-white/20 p-8 text-left shadow-xl shadow-black/30 backdrop-blur-2xl min-[1080px]:p-10">
+                  <button
+                    type="button"
+                    aria-label="Close"
+                    onClick={() => setOpenChip(null)}
+                    className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20"
+                  >
+                    <X className="size-4" />
+                  </button>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-white/60">
+                    Practice Area
+                  </span>
+                  <h3
+                    className={`mt-1 text-2xl font-medium leading-tight text-white ${rhymesDisplay.className}`}
+                  >
+                    {openChip.title}
+                  </h3>
+                  <p className="mt-3 text-sm font-normal leading-relaxed text-white/80">
+                    {openChip.body}
+                  </p>
+                  {openChip.learnMore && (
+                    <a
+                      href={openChip.learnMore}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-[#b7aa7f] px-5 py-2.5 text-sm font-semibold text-[#1f2b3b] transition-colors hover:bg-[#c7ba8f]"
+                    >
+                      Learn More
+                      <ArrowRight className="size-4" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -337,14 +471,16 @@ function MiniLauncher({ onReopen }: { onReopen: () => void }) {
           role="menu"
           className="hero-fade flex min-w-[220px] flex-col divide-y divide-white/10 overflow-hidden rounded-2xl border border-[#1f2b3b]/50 bg-[#1f2b3b]/70 shadow-lg shadow-black/25 backdrop-blur-md"
         >
-          <button
-            type="button"
+          <a
             role="menuitem"
+            href={CTA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setOpen(false)}
             className={item}
           >
             Free consultation
-          </button>
+          </a>
           <a
             role="menuitem"
             href="tel:+14055550199"
