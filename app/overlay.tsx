@@ -8,6 +8,7 @@ import {
   Globe,
   LayoutDashboard,
   Menu,
+  MessageCircle,
   Phone,
   Scale,
   X,
@@ -445,6 +446,27 @@ export default function Overlay() {
                 </a>
               ))}
 
+              {/* Call */}
+              <a
+                href="tel:+14052517155"
+                aria-label="Call us"
+                className="flex h-28 w-28 shrink-0 flex-col items-center justify-center gap-2 rounded-3xl border border-white/25 bg-white/10 text-sm font-medium text-white no-underline shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+              >
+                <Phone className="size-5" />
+                Call
+              </a>
+
+              {/* Chat */}
+              <a
+                href="https://intaker.com/laiturner/forwarder"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-28 w-28 shrink-0 flex-col items-center justify-center gap-2 rounded-3xl bg-[#b7aa7f] px-2 text-center text-sm font-semibold leading-tight text-[#1f2b3b] no-underline shadow-lg shadow-black/10 transition-colors hover:bg-[#c7ba8f]"
+              >
+                <MessageCircle className="size-5" />
+                Chat
+              </a>
+
               {/* Main site */}
               <button
                 type="button"
@@ -506,17 +528,28 @@ export default function Overlay() {
                   <p className="mt-3 text-sm font-normal leading-relaxed text-white/80">
                     {openChip.body}
                   </p>
-                  {openChip.learnMore && (
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
                     <a
-                      href={openChip.learnMore}
+                      href={CTA_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-[#b7aa7f] px-5 py-2.5 text-sm font-semibold text-[#1f2b3b] transition-colors hover:bg-[#c7ba8f]"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-[#b7aa7f] px-5 py-2.5 text-sm font-semibold text-[#1f2b3b] transition-colors hover:bg-[#c7ba8f]"
                     >
-                      Learn More
+                      Free consultation
                       <ArrowRight className="size-4" />
                     </a>
-                  )}
+                    {openChip.learnMore && (
+                      <a
+                        href={openChip.learnMore}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-white/40 bg-white/15 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/25"
+                      >
+                        Learn More
+                        <ArrowRight className="size-4" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
