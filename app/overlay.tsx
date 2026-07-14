@@ -152,18 +152,6 @@ const INFO_CARDS: InfoCard[] = [
     cta: "Read the blog",
     href: "https://www.laiturnerlaw.com/divorce-preparation-checklist-what-to-gather-plan-and-avoid/",
   },
-  {
-    label: "From the Blog",
-    title: (
-      <>
-        Who Pays Attorney Fees in Divorce?
-        <br />
-        Clear Legal Rules + Cost Breakdown
-      </>
-    ),
-    cta: "Read the blog",
-    href: "https://www.laiturnerlaw.com/who-pays-attorney-fees-in-divorce-clear-legal-rules-cost-breakdown/",
-  },
 ];
 
 // Every conversion CTA (hero button, chips, info cards, "Free consultation")
@@ -367,7 +355,7 @@ export default function Overlay() {
             {/* Extra bottom padding optically centers the hero within the gap
                 between the header and the taller bottom bar, rather than the
                 full card. */}
-            <div className="absolute inset-0 z-10 flex items-center justify-center px-6 pb-16 min-[1080px]:pb-[72px]">
+            <div className="absolute inset-0 z-10 flex items-center justify-center px-6 pb-16 min-[1080px]:pb-12">
               <div
                 key={activeTab}
                 className="hero-fade flex w-full max-w-2xl flex-col items-center gap-5 text-center"
@@ -426,7 +414,7 @@ export default function Overlay() {
             </div>
 
             {/* ---- Bottom bar (desktop): info cards + Main site ---- */}
-            <div className="absolute inset-x-8 bottom-8 z-10 hidden items-stretch gap-4 min-[1080px]:flex">
+            <div className="absolute inset-x-8 bottom-8 z-10 hidden items-stretch gap-3 min-[1080px]:flex">
               {/* Info cards */}
               {INFO_CARDS.map((c) => (
                 <a
@@ -434,25 +422,29 @@ export default function Overlay() {
                   href={c.href ?? CTA_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-28 flex-1 flex-col justify-center gap-1 overflow-hidden rounded-3xl border border-white/25 bg-white/10 px-5 text-left shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+                  className="flex h-24 w-[22rem] max-w-[45%] shrink-0 flex-col justify-center gap-1 overflow-hidden rounded-2xl border border-white/25 bg-white/10 px-4 text-left shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
                 >
-                  <span className="line-clamp-2 min-h-[2lh] text-lg font-medium leading-snug text-white">
+                  <span className="line-clamp-2 min-h-[2lh] text-sm font-medium leading-snug text-white">
                     {c.title}
                   </span>
-                  <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-semibold text-[#e3d9bf]">
+                  <span className="mt-0.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[#e3d9bf]">
                     {c.cta}
                     <ArrowRight className="size-3" />
                   </span>
                 </a>
               ))}
 
+              {/* Spacer pushes the action buttons to the right, keeping the blog
+                  card stuck to the left. */}
+              <div className="flex-1" />
+
               {/* Call */}
               <a
                 href="tel:+14052517155"
                 aria-label="Call us"
-                className="flex h-28 w-28 shrink-0 flex-col items-center justify-center gap-2 rounded-3xl border border-white/25 bg-white/10 text-sm font-medium text-white no-underline shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+                className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl border border-white/25 bg-white/10 text-xs font-medium text-white no-underline shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
               >
-                <Phone className="size-5" />
+                <Phone className="size-4" />
                 Call
               </a>
 
@@ -461,9 +453,9 @@ export default function Overlay() {
                 href="https://intaker.com/laiturner/forwarder"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-28 w-28 shrink-0 flex-col items-center justify-center gap-2 rounded-3xl bg-[#b7aa7f] px-2 text-center text-sm font-semibold leading-tight text-[#1f2b3b] no-underline shadow-lg shadow-black/10 transition-colors hover:bg-[#c7ba8f]"
+                className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl bg-[#b7aa7f] px-2 text-center text-xs font-semibold leading-tight text-[#1f2b3b] no-underline shadow-lg shadow-black/10 transition-colors hover:bg-[#c7ba8f]"
               >
-                <MessageCircle className="size-5" />
+                <MessageCircle className="size-4" />
                 Chat
               </a>
 
@@ -471,9 +463,9 @@ export default function Overlay() {
               <button
                 type="button"
                 onClick={dismiss}
-                className="flex h-28 w-28 shrink-0 flex-col items-center justify-center gap-2 rounded-3xl border border-white/25 bg-white/10 text-sm font-medium text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+                className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl border border-white/25 bg-white/10 text-xs font-medium text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
               >
-                <ArrowUpRight className="size-5" />
+                <ArrowUpRight className="size-4" />
                 Main site
               </button>
             </div>
