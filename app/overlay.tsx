@@ -7,6 +7,7 @@ import {
   HeartHandshake,
   Globe,
   LayoutDashboard,
+  Menu,
   Phone,
   Scale,
   X,
@@ -130,18 +131,37 @@ const TABS: Tab[] = [
   },
 ];
 
-type InfoCard = { label: string; title: string; cta: string };
+type InfoCard = {
+  label: string;
+  title: React.ReactNode;
+  cta: string;
+  href?: string;
+};
 
 const INFO_CARDS: InfoCard[] = [
   {
-    label: "Case Result",
-    title: "Felony charges dismissed in under 30 days",
-    cta: "Read the story",
+    label: "From the Blog",
+    title: (
+      <>
+        Divorce Preparation Checklist:
+        <br />
+        What to Gather, Plan, and Avoid
+      </>
+    ),
+    cta: "Read the blog",
+    href: "https://www.laiturnerlaw.com/divorce-preparation-checklist-what-to-gather-plan-and-avoid/",
   },
   {
     label: "From the Blog",
-    title: "What to do right after an arrest in OKC",
+    title: (
+      <>
+        Who Pays Attorney Fees in Divorce?
+        <br />
+        Clear Legal Rules + Cost Breakdown
+      </>
+    ),
     cta: "Read the blog",
+    href: "https://www.laiturnerlaw.com/who-pays-attorney-fees-in-divorce-clear-legal-rules-cost-breakdown/",
   },
 ];
 
@@ -162,18 +182,33 @@ export default function Overlay() {
   const [hidden, setHidden] = useState(false);
   // The practice-area chip whose answer popup is open (null = none).
   const [openChip, setOpenChip] = useState<Chip | null>(null);
+  // The mobile hamburger menu (tabs + CTAs) open state.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  // Escape closes the open chip popup first, otherwise the overlay (matching
-  // Boxii); dismissal is otherwise driven by the "Main site" button.
+  // Escape closes the chip popup, then the mobile menu, then the overlay
+  // (matching Boxii); dismissal is otherwise driven by the "Main site" button.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       if (openChip) setOpenChip(null);
+      else if (menuOpen) setMenuOpen(false);
       else setDismissed(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [openChip]);
+  }, [openChip, menuOpen]);
+
+  // Close the mobile menu on any click outside it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: PointerEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node))
+        setMenuOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown, true);
+    return () => document.removeEventListener("pointerdown", onDown, true);
+  }, [menuOpen]);
 
   const dismiss = () => setDismissed(true);
 
@@ -214,11 +249,11 @@ export default function Overlay() {
             <img
               src="/images/logo.png"
               alt="Lai & Turner Law Firm PLLC"
-              className="absolute left-8 top-8 z-20 hidden h-14 object-contain object-left min-[1080px]:block"
+              className="absolute left-6 top-6 z-20 h-10 object-contain object-left min-[1080px]:left-8 min-[1080px]:top-8 min-[1080px]:h-14"
             />
 
-            {/* Top-center tabs. Scrolls horizontally if it can't fit. */}
-            <div className="absolute left-1/2 top-5 z-20 flex max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1 overflow-x-auto rounded-full border border-white/20 bg-white/10 p-1 backdrop-blur-md min-[1080px]:top-8">
+            {/* Top-center tabs (desktop). On mobile these live in the menu. */}
+            <div className="absolute left-1/2 top-5 z-20 hidden max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1 overflow-x-auto rounded-full border border-white/20 bg-white/10 p-1 backdrop-blur-md min-[1080px]:top-8 min-[1080px]:flex">
               {TABS.map((t) => {
                 const active = t.id === activeTab;
                 return (
@@ -246,7 +281,7 @@ export default function Overlay() {
             {/* Desktop top-right: Call, primary CTA, close. */}
             <div className="absolute right-8 top-8 z-20 hidden items-center gap-3 min-[1080px]:flex">
               <a
-                href="tel:+14055550199"
+                href="tel:+14052517155"
                 className="flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-normal text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
               >
                 <Phone className="size-4 text-white/80" />
@@ -262,8 +297,76 @@ export default function Overlay() {
               </a>
             </div>
 
+            {/* Mobile: hamburger that toggles a full-width menu of tabs + CTAs. */}
+            <div ref={menuRef} className="min-[1080px]:hidden">
+              <button
+                type="button"
+                aria-label="Menu"
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((v) => !v)}
+                className="absolute right-6 top-6 z-30 flex size-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
+              >
+                {menuOpen ? (
+                  <X className="size-5" />
+                ) : (
+                  <Menu className="size-5" />
+                )}
+              </button>
+              {/* Kept mounted so it can transition both in AND out. */}
+              <div
+                className={`absolute inset-x-6 top-[4.75rem] z-30 flex origin-top flex-col gap-1 rounded-2xl border border-white/40 bg-white/20 p-2 shadow-xl shadow-black/30 backdrop-blur-2xl transition-[opacity,transform] duration-200 ease-out ${
+                  menuOpen
+                    ? "translate-y-0 scale-100 opacity-100"
+                    : "pointer-events-none -translate-y-2 scale-95 opacity-0"
+                }`}
+              >
+                {TABS.map((t) => {
+                  const active = t.id === activeTab;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveTab(t.id);
+                        setOpenChip(null);
+                        setMenuOpen(false);
+                      }}
+                      className={`w-full rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors ${
+                        active
+                          ? "bg-white/30 text-white"
+                          : "text-white/85 hover:bg-white/15"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+                <div className="my-1 h-px bg-white/25" />
+                <a
+                  href="tel:+14052517155"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-white/85 no-underline transition-colors hover:bg-white/15"
+                >
+                  <Phone className="size-4" />
+                  Call us
+                </a>
+                <a
+                  href={CTA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="mt-0.5 flex items-center justify-center rounded-xl bg-[#b7aa7f] px-3 py-2.5 text-sm font-semibold text-[#1f2b3b] no-underline transition-colors hover:bg-[#c7ba8f]"
+                >
+                  Free consultation
+                </a>
+              </div>
+            </div>
+
             {/* ---- Hero: swaps with the active tab ---- */}
-            <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
+            {/* Extra bottom padding optically centers the hero within the gap
+                between the header and the taller bottom bar, rather than the
+                full card. */}
+            <div className="absolute inset-0 z-10 flex items-center justify-center px-6 pb-16 min-[1080px]:pb-[72px]">
               <div
                 key={activeTab}
                 className="hero-fade flex w-full max-w-2xl flex-col items-center gap-5 text-center"
@@ -326,16 +429,13 @@ export default function Overlay() {
               {/* Info cards */}
               {INFO_CARDS.map((c) => (
                 <a
-                  key={c.title}
-                  href={CTA_URL}
+                  key={c.href ?? c.cta}
+                  href={c.href ?? CTA_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-28 flex-1 flex-col justify-center gap-1 overflow-hidden rounded-3xl border border-white/25 bg-white/10 px-5 text-left shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-white/20"
                 >
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-white/60">
-                    {c.label}
-                  </span>
-                  <span className="line-clamp-2 text-[17px] font-medium leading-tight text-white">
+                  <span className="line-clamp-2 min-h-[2lh] text-lg font-medium leading-snug text-white">
                     {c.title}
                   </span>
                   <span className="mt-0.5 inline-flex items-center gap-1 text-xs font-semibold text-[#e3d9bf]">
@@ -483,11 +583,11 @@ function MiniLauncher({ onReopen }: { onReopen: () => void }) {
           </a>
           <a
             role="menuitem"
-            href="tel:+14055550199"
+            href="tel:+14052517155"
             onClick={() => setOpen(false)}
             className={item}
           >
-            Call (405) 555-0199
+            Call (405) 251-7155
           </a>
           <button
             type="button"

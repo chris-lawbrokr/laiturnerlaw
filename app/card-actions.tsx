@@ -52,7 +52,7 @@ export function IconActions({
   return (
     <>
       <a
-        href="tel:+14055550199"
+        href="tel:+14052517155"
         aria-label="Call us"
         onClick={
           onAction
@@ -117,7 +117,7 @@ export default function CardActions({
       {/* Mobile: three even buttons spread across the bottom. */}
       <div className="absolute inset-x-6 bottom-6 z-10 flex gap-3 min-[1080px]:hidden">
         <a
-          href="tel:+14055550199"
+          href="tel:+14052517155"
           aria-label="Call us"
           className="flex flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 py-3 text-sm font-medium text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
         >
@@ -143,7 +143,7 @@ export default function CardActions({
       {/* Desktop: the original mixed-size CTA row, pinned bottom-right. */}
       <div className="absolute bottom-8 right-8 z-10 hidden gap-4 min-[1080px]:flex">
         <a
-          href="tel:+14055550199"
+          href="tel:+14052517155"
           aria-label="Call us"
           className="flex size-24 flex-col items-center justify-center gap-1.5 rounded-3xl border border-[#1f2b3b]/40 bg-[#1f2b3b]/45 text-base font-medium text-white shadow-lg shadow-black/10 backdrop-blur-md transition-colors hover:bg-[#1f2b3b]/60"
         >
