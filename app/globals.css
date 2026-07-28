@@ -24,25 +24,3 @@ button:not(:disabled),
 [role="button"]:not(:disabled) {
   cursor: pointer;
 }
-
-/* Subtle crossfade when switching the hero between tabs. */
-@keyframes hero-fade {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-fade {
-  animation: hero-fade 0.28s ease both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-fade {
-    animation: none;
-  }
-}
